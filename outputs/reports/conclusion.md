@@ -1,19 +1,19 @@
 # Conclusion
 
-## The question
+## The question I wanted to answer
 
-We want to rank churn risk and test whether state-level median household income adds signal beyond internal telecom features.
+I wanted to rank churn risk and check whether state-level median household income adds useful signal beyond internal telecom features.
 
-## What we did
+## What I did
 
-1. Cleaned the customer table, created a binary churn target, and removed leakage columns (for example, churn reason and churn score).  
-2. Joined Census ACS median income by state after normalizing state keys.  
-3. Engineered tenure buckets, income quartile, and a price-sensitivity proxy.  
-4. Trained Model A (internal features) vs Model B (internal + income) on the same stratified split using logistic regression and hist gradient boosting.
+I cleaned the customer table, created a binary churn target, and removed leakage columns such as churn reason and churn score.  
+I joined Census ACS median income by state after normalizing state keys.  
+I engineered tenure buckets, income quartile, and a price-sensitivity proxy.  
+I trained Model A (internal features) and Model B (internal plus income) on the same stratified split using logistic regression and hist gradient boosting.
 
 ## Headline results (held-out test set)
 
-Metrics come from the shared holdout test set (`outputs/tables/model_comparison.csv`).
+These metrics come from the shared holdout test set in `outputs/tables/model_comparison.csv`.
 
 | Model        | ROC AUC | PR AUC |
 |-------------|---------|--------|
@@ -22,32 +22,28 @@ Metrics come from the shared holdout test set (`outputs/tables/model_comparison.
 | A_hgb       | 0.8441  | 0.6487 |
 | B_hgb       | 0.8441  | 0.6487 |
 
-- Logistic regression: Model B is slightly better than Model A on both ROC AUC and PR AUC.  
-- Hist gradient boosting: A and B are tied at this precision on this run.
+In logistic regression, Model B is slightly better than Model A on both ROC AUC and PR AUC.  
+In hist gradient boosting, Models A and B are tied at this precision for this run.
 
-## What seems to drive churn (Model B HGB, permutation importance)
+## What seems to drive churn
 
-On preprocessed test rows, permutation importance highlights:
+Using Model B HGB with permutation importance on preprocessed test rows, the strongest signals are:
 
-- Price sensitivity proxy  
-- Month-to-month contract  
-- Dependents  
-- Fiber optic internet  
-- Electronic check payment
+price sensitivity proxy, month-to-month contract, dependents, fiber optic internet, and electronic check payment.
 
-Income-specific columns are not top-ranked in this run, so plan and service signals dominate model ranking. Income still helps with segment context.
+Income-specific columns are not top-ranked in this run, so plan and service variables drive most of the ranking signal. Income still helps as segment context.
 
 ## Segments (EDA)
 
-Churn-rate plots by contract, payment method, tenure bucket, and income quartile show where churn concentrates. Pair these with model scores to prioritize outreach.
+Churn-rate plots by contract, payment method, tenure bucket, and income quartile show where churn is concentrated. I use those segment views with model scores to prioritize outreach.
 
-## So what? (Product-style actions)
+## What I would do next
 
-1. Run retention tests for month-to-month and electronic-check cohorts.  
-2. Improve onboarding for early-tenure customers and promote support/security bundles where relevant.  
-3. Use income quartile as segmentation context for messaging and offer strategy.  
-4. If stronger income lift is needed, test finer geography or richer affordability features.
+I would run retention tests for month-to-month and electronic-check cohorts first.  
+I would improve onboarding for early-tenure customers and promote support/security bundles where those features are strong.  
+I would use income quartile as segmentation context for messaging and offer strategy.  
+If I need stronger lift from external data, I would test finer geography or richer affordability features.
 
 ---
 
-Numbers above reflect one evaluation run. Re-run training and evaluation if data or code changes.
+These numbers reflect one evaluation run. I would rerun training and evaluation whenever data or code changes.
