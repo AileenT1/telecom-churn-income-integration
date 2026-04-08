@@ -88,7 +88,6 @@ python src/interpret.py
 | Feature importance | `outputs/tables/perm_importance_modelB.csv` |
 | Final report (HTML) | `outputs/reports/final_story.html` |
 | Written conclusion | `outputs/reports/conclusion.md` |
-| Resume bullets | `outputs/reports/resume_bullets.md` |
 
 ## Tests
 
